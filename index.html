@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App | Ankit</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #0f172a;
+      color: white;
+      margin: 0;
+    }
+
+    .container {
+      margin-top: 100px;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      background: #22c55e;
+      color: white;
+      cursor: pointer;
+    }
+
+    #weatherResult {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    img {
+      width: 80px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Weather App 🌦</h1>
+
+    <input type="text" id="cityInput" placeholder="Enter city..." />
+    <button onclick="getWeather()">Search</button>
+
+    <div id="weatherResult"></div>
+  </div>
+
+  <script>
+    const apiKey = "180a2d0f9d3ee1a8a241ebc281672ee8"; // 👈 yaha apni API key daalo
+
+    async function getWeather() {
+      const city = document.getElementById("cityInput").value;
+      const weatherResult = document.getElementById("weatherResult");
+
+      if (!city) {
+        weatherResult.innerHTML = "Please enter a city";
+        return;
+      }
+
+      weatherResult.innerHTML = "Loading...";
+
+const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.cod != 200) {
+          weatherResult.innerHTML = "City not found ❌";
+          return;
+        }
+
+        weatherResult.innerHTML = `
+          <h2>${data.name}</h2>
+          <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" />
+          <p>${data.weather[0].main}</p>
+          <p>🌡 Temp: ${data.main.temp}°C</p>
+          <p>💧 Humidity: ${data.main.humidity}%</p>
+        `;
+
+      } catch (error) {
+        weatherResult.innerHTML = "Error fetching data ⚠️";
+      }
+    }
+
+    // Enter key support
+    document.getElementById("cityInput").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") getWeather();
+      });
+
+  </script>
+
+</body>
+</html>
