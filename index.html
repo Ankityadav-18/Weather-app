@@ -1,102 +1,309 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather App | Ankit</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #0f172a;
-      color: white;
-      margin: 0;
-    }
+<title>AI Weather App</title>
 
-    .container {
-      margin-top: 100px;
-    }
+<style>
 
-    input, button {
-      padding: 10px;
-      margin: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-    }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
 
-    button {
-      background: #22c55e;
-      color: white;
-      cursor: pointer;
-    }
+body{
 
-    #weatherResult {
-      margin-top: 20px;
-      font-size: 18px;
-    }
+    height:100vh;
 
-    img {
-      width: 80px;
-    }
-  </style>
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b,
+        #111827
+    );
+
+    overflow:hidden;
+}
+
+.container{
+
+    width:380px;
+
+    padding:35px;
+
+    border-radius:25px;
+
+    background:rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(15px);
+
+    border:1px solid rgba(255,255,255,0.15);
+
+    box-shadow:
+    0 10px 40px rgba(0,0,0,0.4);
+
+    text-align:center;
+
+    color:white;
+}
+
+h1{
+
+    font-size:38px;
+
+    margin-bottom:25px;
+
+    color:#38bdf8;
+}
+
+.search-box{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-bottom:25px;
+}
+
+input{
+
+    flex:1;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    outline:none;
+
+    font-size:16px;
+}
+
+button{
+
+    padding:14px 18px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#38bdf8;
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+button:hover{
+
+    background:#0ea5e9;
+
+    transform:scale(1.05);
+}
+
+.weather-card{
+
+    margin-top:20px;
+}
+
+.temp{
+
+    font-size:55px;
+
+    font-weight:bold;
+
+    margin:15px 0;
+}
+
+.city{
+
+    font-size:28px;
+
+    margin-bottom:10px;
+}
+
+.desc{
+
+    font-size:18px;
+
+    color:#cbd5e1;
+
+    margin-bottom:20px;
+}
+
+.extra{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-top:20px;
+
+    font-size:16px;
+}
+
+.ai-box{
+
+    margin-top:25px;
+
+    padding:15px;
+
+    border-radius:15px;
+
+    background:rgba(255,255,255,0.08);
+
+    font-size:15px;
+
+    color:#e2e8f0;
+}
+
+</style>
 </head>
 
 <body>
 
-  <div class="container">
-    <h1>Weather App 🌦</h1>
+<div class="container">
 
-    <input type="text" id="cityInput" placeholder="Enter city..." />
-    <button onclick="getWeather()">Search</button>
+    <h1>🌦️ AI Weather</h1>
 
-    <div id="weatherResult"></div>
-  </div>
+    <div class="search-box">
 
-  <script>
-    const apiKey = "180a2d0f9d3ee1a8a241ebc281672ee8"; // 👈 yaha apni API key daalo
+        <input
+        type="text"
+        id="cityInput"
+        placeholder="Enter city..."
+        />
 
-    async function getWeather() {
-      const city = document.getElementById("cityInput").value;
-      const weatherResult = document.getElementById("weatherResult");
+        <button onclick="getWeather()">
+            Search
+        </button>
 
-      if (!city) {
-        weatherResult.innerHTML = "Please enter a city";
-        return;
-      }
+    </div>
 
-      weatherResult.innerHTML = "Loading...";
+    <div class="weather-card">
 
-const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
+        <div class="city" id="city">
+            Ahmedabad
+        </div>
 
-        if (data.cod != 200) {
-          weatherResult.innerHTML = "City not found ❌";
-          return;
+        <div class="temp" id="temp">
+            32°C
+        </div>
+
+        <div class="desc" id="desc">
+            Clear Sky
+        </div>
+
+        <div class="extra">
+
+            <div>
+                💧 Humidity
+                <br>
+                <span id="humidity">60%</span>
+            </div>
+
+            <div>
+                🌬️ Wind
+                <br>
+                <span id="wind">12 km/h</span>
+            </div>
+
+        </div>
+
+        <div class="ai-box" id="aiTip">
+
+            🤖 AI Suggestion:
+            Stay hydrated and avoid direct sunlight in the afternoon.
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+async function getWeather(){
+
+    const city =
+    document.getElementById("cityInput").value;
+
+    if(city === "") return;
+
+    const apiKey =
+    "YOUR_API_KEY";
+
+    const url ='https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric';
+
+    try{
+
+        const response = await fetch(url);
+
+        const data = await response.json();
+
+        document.getElementById("city").innerText =
+        data.name;
+
+        document.getElementById("temp").innerText =
+        Math.floor(data.main.temp) + "°C";
+
+        document.getElementById("desc").innerText =
+        data.weather[0].description;
+
+        document.getElementById("humidity").innerText =
+        data.main.humidity + "%";
+
+        document.getElementById("wind").innerText =
+        data.wind.speed + " km/h";
+
+        const temp = data.main.temp;
+
+        let suggestion = "";
+
+        if(temp > 35){
+
+            suggestion =
+            "🤖 AI Suggestion: High temperature detected. Drink more water and avoid heat exposure.";
         }
 
-        weatherResult.innerHTML = `
-          <h2>${data.name}</h2>
-          <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" />
-          <p>${data.weather[0].main}</p>
-          <p>🌡 Temp: ${data.main.temp}°C</p>
-          <p>💧 Humidity: ${data.main.humidity}%</p>
-        `;
+        else if(temp < 15){
 
-      } catch (error) {
-        weatherResult.innerHTML = "Error fetching data ⚠️";
-      }
+            suggestion =
+            "🤖 AI Suggestion: Cold weather detected. Wear warm clothes before going outside.";
+        }
+
+        else{
+
+            suggestion =
+            "🤖 AI Suggestion: Weather looks pleasant. Great time for outdoor activities.";
+        }
+
+        document.getElementById("aiTip").innerText =
+        suggestion;
+
     }
 
-    // Enter key support
-    document.getElementById("cityInput").addEventListener("keypress", function(e) {
-        if (e.key === "Enter") getWeather();
-      });
+    catch(error){
 
-  </script>
+        alert("City not found");
+    }
+}
+
+</script>
 
 </body>
 </html>
